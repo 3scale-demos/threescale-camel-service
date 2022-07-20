@@ -1,0 +1,136 @@
+# Configuration file
+
+# Camel
+camel:
+  context:
+    name: threescale-camel-service
+
+# Camel Proxy service
+camel-proxy-service:
+  port:
+    nonsecure: 9090
+    secure: 9443
+  keystore:
+    mount-path: /tmp
+    passphrase: P@ssw0rd
+
+# Quarkus
+quarkus:
+  # Display the banner
+  banner:
+    enabled: true
+  # Eventually, the client should trust a self signed certificate presented by the API server
+  kubernetes-client:
+    trust-certs: true
+  # Enable native SSL support
+  ssl:
+    native: true
+
+  ## Quarkus OpenShift extension configuration
+  openshift:
+    # The build config strategy to use
+    build-strategy: docker
+    # The default Dockerfile to use for jvm builds
+    jvm-dockerfile: src/main/docker/Dockerfile.jvm
+    # The default Dockerfile to use for native builds
+    native-dockerfile: src/main/docker/Dockerfile.native
+    # Allows the proxy ports to be included in the generated resources (DeploymentConfig and Service)
+    ports:
+      proxy:
+        container-port: ${camel-proxy-service.port.nonsecure}
+      proxy-secure:
+        container-port: ${camel-proxy-service.port.secure}
+    # The number of desired pods
+    replicas: 2
+    # Expose OpenShift route
+    route:
+      expose: false
+    # CPU and Memory resources requirements when deployed on Kubernetes/OpenShift
+    resources:
+        requests:
+            cpu: 30m
+            memory: 256Mi
+        limits:
+            cpu: 500m
+            memory: 256Mi
+    # The type of service that will be generated for the application
+    service-type: ClusterIP
+    # Secret to mount and where to mount it
+    secret-volumes:
+      keystore-volume:
+        secret-name: service-keystore-secret
+    mounts:
+      keystore-volume:
+        path: /mnt
+
+  # OpenTracing configuration. This is leveraged by Camel Quarkus OpenTracing extension
+  jaeger:
+    # The service name
+    service-name: ${camel.context.name}
+    # The sampler type (const, probabilistic, ratelimiting or remote)
+    sampler-type: const
+    # The sampler parameter
+    sampler-param: 1
+    # The traces endpoint to the Collector
+    endpoint: http://localhost:14268/api/traces
+
+  # Quarkus kubernetes config extension
+  kubernetes-config:
+    # Enable to look up the configuration from the API server
+    enabled: true
+    # ConfigMaps (list of strings) to look for in the namespace that the Kubernetes Client has been configured for
+    config-maps: threescale-camel-service-config
+    secrets:
+      # Secrets (list of strings) to look for in the namespace that the Kubernetes Client has been configured for 
+      ~: threescale-camel-service-secret
+      # Enable to generate the necessary role and corresponding role binding
+      enabled: true
+
+  # OIDC client
+  oidc-client:
+    # The base URL of the OpenID Connect (OIDC) server
+    auth-server-url: https://sso.apps.cluster-tjldv.tjldv.sandbox661.opentlc.com/auth/realms/openshift-cluster
+    # The client-id of the application. Each application has a client-id that is used to identify the application
+    client-id: threescale-camel-service
+    # Client secret which is used for a `client_secret_basic` authentication method.
+    credentials:
+      secret: TnfDT5CfPLFHEiJm5XLub0TqAEJaa3xv
+  
+  ## Quarkus native build 
+  native:
+    # If all character sets should be added to the native image. This increases image size
+    add-all-charsets: true
+    # If this build should be done using a container runtime. 
+    # If this is set docker will be used by default, unless container-runtime is also set.
+    container-build: true
+
+  ## Camel Quarkus
+  camel:
+    # Microprofile Camel Health checks
+    # Cf. https://camel.apache.org/camel-quarkus/latest/extensions/microprofile-health.html
+    health:
+      enabled: true
+
+    # Microprofile Camel Metrics
+    # Cf. https://camel.apache.org/camel-quarkus/latest/extensions/microprofile-metrics.html
+    metrics:
+      enable-route-policy: true
+      enable-message-history: false
+      enable-exchange-event-notifier: true
+      enable-route-event-notifier: true
+      enable-camel-context-event-notifier: true
+
+    # native mode configuration
+    native:
+      # A comma separated list of Ant-path style patterns to match class names
+      # that should be registered for reflection.
+      # Reference: https://camel.apache.org/camel-quarkus/latest/user-guide/native-mode.html#reflection
+      reflection:
+        include-patterns: java.lang.Exception
+
+  # Quarkus log
+  log:
+    category:
+      io.quarkus.oidc:
+        min-level: DEBUG
+        level: DEBUG
