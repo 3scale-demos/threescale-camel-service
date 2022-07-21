@@ -74,18 +74,6 @@ quarkus:
     # The traces endpoint to the Collector
     endpoint: http://localhost:14268/api/traces
 
-  # Quarkus kubernetes config extension
-  kubernetes-config:
-    # Enable to look up the configuration from the API server
-    enabled: true
-    # ConfigMaps (list of strings) to look for in the namespace that the Kubernetes Client has been configured for
-    config-maps: threescale-camel-service-config
-    secrets:
-      # Secrets (list of strings) to look for in the namespace that the Kubernetes Client has been configured for 
-      ~: threescale-camel-service-secret
-      # Enable to generate the necessary role and corresponding role binding
-      enabled: true
-
   # OIDC client
   oidc-client:
     # The base URL of the OpenID Connect (OIDC) server
@@ -134,3 +122,18 @@ quarkus:
       io.quarkus.oidc:
         min-level: DEBUG
         level: DEBUG
+
+# Only when running in prod profile
+"%prod":
+  quarkus:
+    # Quarkus kubernetes config extension
+    kubernetes-config:
+      # Enable to look up the configuration from the API server
+      enabled: true
+      # ConfigMaps (list of strings) to look for in the namespace that the Kubernetes Client has been configured for
+      config-maps: threescale-camel-service-config
+      secrets:
+        # Secrets (list of strings) to look for in the namespace that the Kubernetes Client has been configured for 
+        ~: threescale-camel-service-secret
+        # Enable to generate the necessary role and corresponding role binding
+        enabled: true
