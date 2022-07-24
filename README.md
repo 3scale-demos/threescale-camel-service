@@ -10,14 +10,15 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 
 ## O. Prerequisites
 
-- Maven 3.8.3+
-- JDK 11
-- A running _Red Hat SSO_ instance
-- A running _Red Hat OpenShift_ cluster
+- Maven 3.8.1+
+- JDK 17 installed with `JAVA_HOME` configured appropriately
+- A running [_Red Hat SSO_](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on) instance
+- A running [_Red Hat OpenShift_](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster
+- Eventually, a running [_Red Hat 3scale API Management_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management) platform
 
 ## 1. Generate a Java Keystore
 
-```zsh
+```shell script
 keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-service -keyalg RSA \
 -dname "CN=threescale-camel-service" \
 -validity 3600 -keystore /tmp/keystore.p12 -v \
@@ -80,29 +81,29 @@ If you want to learn more about building native executables, please consult http
 2. While the server is running, browse to http://localhost:16686 to view tracing events.
 
 ## 6. Test locally
-```zsh
+```shell script
 print "GET http://localhost:8080/q/health HTTP/1.1\nHost: localhost\nAccept: */*\n\n" | ncat --no-shutdown --ssl localhost 9443
 ```
 
 ## 7. Deploy to OpenShift
 
-```zsh
+```shell script
 oc login ...
 ```
-```zsh
+```shell script
 oc new-project ceq-services --display-name="Red Hat CEQ Services"
 ```
 
 ### Create secret containing the keystore
 
-```zsh
+```shell script
 oc create secret generic service-keystore-secret \
 --from-file=keystore.p12=/tmp/keystore.p12
 ```
 
 ### Package and deploy to OpenShift
 
-```zsh
+```shell script
 ./mvnw clean package -Dquarkus.kubernetes.deploy=true
 ```
 
@@ -110,9 +111,28 @@ oc create secret generic service-keystore-secret \
 
 - OpenShift ([guide](https://quarkus.io/guides/deploying-to-openshift)): Generate OpenShift resources from annotations
 - OpenID Connect Client ([guide](https://quarkus.io/guides/security-openid-connect-client)): Get and refresh access tokens from OpenID Connect providers
-- Camel MicroProfile Health ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-microprofile-health)): Bridging Eclipse MicroProfile Health with Camel health checks
+- Camel MicroProfile Health ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-microprofile-health)): Expose Camel health checks via MicroProfile Health
 - Camel MicroProfile Metrics ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-microprofile-metrics)): Expose metrics from Camel routes
+- Camel Bean Validator ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-bean-validator)): Validate the message body using the Java Bean Validation API
 - YAML Configuration ([guide](https://quarkus.io/guides/config#yaml)): Use YAML to configure your Quarkus application
+- RESTEasy JAX-RS ([guide](https://quarkus.io/guides/rest-json)): REST endpoint framework implementing JAX-RS and more
+- Camel Bean ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-bean)): Invoke methods of Java beans
 - Kubernetes Config ([guide](https://quarkus.io/guides/kubernetes-config)): Read runtime configuration from Kubernetes ConfigMaps and Secrets
 - Camel OpenTracing ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/opentracing.html)): Distributed tracing using OpenTracing
 - Camel Netty HTTP ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/netty-http.html)): Netty HTTP server and client using the Netty 4.x
+
+## Provided Code
+
+### YAML Config
+
+Configure your application with YAML
+
+[Related guide section...](https://quarkus.io/guides/config-reference#configuration-examples)
+
+The Quarkus application configuration is located in `src/main/resources/application.yml`.
+
+### RESTEasy JAX-RS
+
+Easily start your RESTful Web Services
+
+[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
