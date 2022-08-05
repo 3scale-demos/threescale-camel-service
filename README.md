@@ -21,8 +21,8 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 ```shell script
 keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-service -keyalg RSA \
 -dname "CN=threescale-camel-service" \
--validity 3600 -keystore /tmp/keystore.p12 -v \
--ext san=DNS:threescale-camel-service.svc,DNS:threescale-camel-service.svc.cluster.local,DNS:threescale-camel-service.camel-quarkus.svc,DNS:threescale-camel-service.camel-quarkus.svc.cluster.local
+-validity 3600 -keystore ./tls-keys/keystore.p12 -v \
+-ext san=DNS:threescale-camel-service.svc,DNS:threescale-camel-service.svc.cluster.local,DNS:threescale-camel-service.camel-quarkus.svc,DNS:threescale-camel-service.camel-quarkus.svc.cluster.local,DNS:threescale-camel-service.ceq-services-jvm.svc,DNS:threescale-camel-service.ceq-services-jvm.svc.cluster.local,DNS:threescale-camel-service.ceq-services-native.svc,DNS:threescale-camel-service.ceq-services-native.svc.cluster.local
 ```
 
 ## 2. Running the application in dev mode
@@ -91,14 +91,14 @@ print "GET http://localhost:8080/q/health HTTP/1.1\nHost: localhost\nAccept: */*
 oc login ...
 ```
 ```shell script
-oc new-project ceq-services --display-name="Red Hat CEQ Services"
+oc new-project ceq-services-jvm --display-name="Red Hat Camel Extensions for Quarkus Apps - JVM Mode"
 ```
 
 ### Create secret containing the keystore
 
 ```shell script
-oc create secret generic service-keystore-secret \
---from-file=keystore.p12=/tmp/keystore.p12
+oc create secret generic threescale-camel-service-keystore-secret \
+--from-file=keystore.p12=./tls-keys/keystore.p12
 ```
 
 ### Package and deploy to OpenShift
