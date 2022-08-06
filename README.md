@@ -107,6 +107,18 @@ oc create secret generic threescale-camel-service-keystore-secret \
 ./mvnw clean package -Dquarkus.kubernetes.deploy=true
 ```
 
+## How to configure the _APICast Camel Service_ policy to use this service
+
+### :bulb: Pre-requisite
+
+- An API Product configured in _Red Hat 3scale API Management_. For instance, the sample `Echo API` can be used.
+
+### 1. Add and configure the _APICast Camel Service_ policy on the API Product
+
+> *NOTE*: TODO(add notes on the configuration of the policy)
+
+![APICast Camel Service Policy](./images/CamelServicePolicy.png)
+
 ## Related Guides
 
 - OpenShift ([guide](https://quarkus.io/guides/deploying-to-openshift)): Generate OpenShift resources from annotations
