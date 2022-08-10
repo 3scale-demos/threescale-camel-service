@@ -1,8 +1,8 @@
-# threescale-camel-service Project
+# threescale-camel-service
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-It implements a proxy service, using [_Red Hat Camel Extensions for Quarkus_](https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q3/html/getting_started_with_camel_extensions_for_quarkus/index), that can be used with the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
+It implements a camel proxy service, using [_Red Hat Camel Extensions for Quarkus_](https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q3/html/getting_started_with_camel_extensions_for_quarkus/index), that can be used with the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
 
 The proxy service uses the OAuth2 _client credentials flow_ to obtain an access token from _Red Hat SSO_, and then sets it in the _Authorization_ HTTP header before proxying the request.
 
