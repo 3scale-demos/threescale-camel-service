@@ -87,7 +87,7 @@ You can run your application in dev mode that enables live coding using:
 
 ## 4. Packaging and running the application on Red Hat OpenShift
 
-###:bulb: Pre-requisites
+### :bulb: Pre-requisites
 
 - Access to a [Red Hat OpenShift](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster v4
 - User has self-provisioner privilege or has access to a working OpenShift project
