@@ -93,7 +93,7 @@ You can run your application in dev mode that enables live coding using:
 - User has self-provisioner privilege or has access to a working OpenShift project
 - **OPTIONAL**: [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)).
 
-### Instructions
+### :bulb: Instructions
 
 1. Login to the OpenShift cluster
     ```shell script
@@ -120,7 +120,7 @@ You can run your application in dev mode that enables live coding using:
 
 - An API Product configured in _Red Hat 3scale API Management_. For instance, the sample `Echo API` can be used.
 
-### Instructions
+### :bulb: Instructions
 
 1. Add and configure the [_APICast Camel Service_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy on the API Product
     - Reference: https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/transform-with-policy-extension_3scale#configure-apicast-policy-extension-in-fuse_3scale
