@@ -113,9 +113,14 @@ oc create secret generic threescale-camel-service-keystore-secret \
 
 - An API Product configured in _Red Hat 3scale API Management_. For instance, the sample `Echo API` can be used.
 
-### 1. Add and configure the _APICast Camel Service_ policy on the API Product
+### Instructions
 
-> *NOTE*: TODO(add notes on the configuration of the policy)
+1. Add and configure the [_APICast Camel Service_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy on the API Product
+    - Reference: https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/transform-with-policy-extension_3scale#configure-apicast-policy-extension-in-fuse_3scale
+2. Beware of the following note:
+    > *NOTE*: You cannot use `curl` (or any other HTTP client) to test the Camel HTTP proxy directly because the proxy does not support HTTP tunneling using the `CONNECT` method. When using HTTP tunneling with `CONNECT`, the transport is end-to-end encrypted, which does not allow the Camel HTTP proxy to mediate the payload. You may test this with 3scale, which implements this as if proxying via HTTP but establishes a new TLS session towards the Camel application. If you need to perform integration tests against the Camel application you need to use a custom HTTP client. You can use something like: `print "GET https://<backend url> HTTP/1.1\nHost: <backend host>\nAccept: */*\n\n" | ncat --no-shutdown --ssl <camel proxy app host> <camel proxy app port>`
+
+Below is a screenshot of the [_Camel Service_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy configuration:
 
 ![APICast Camel Service Policy](./images/CamelServicePolicy.png)
 
