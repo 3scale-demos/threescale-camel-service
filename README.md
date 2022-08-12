@@ -19,6 +19,9 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
     2. Replace the `client secret` in:
         - `quarkus.oidc-client.credentials.secret` property in the [`application.yml`](./src/main/resources/application.yml) file
         - `quarkus.oidc-client.credentials.secret` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file
+    3. Replace the `OIDC authorization server URL` in:
+        - `quarkus.oidc-client.auth-server-url`  property in the [`application.yml`](./src/main/resources/application.yml) file
+        - `quarkus.oidc-client.auth-server-url` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file
 - A running [_Red Hat OpenShift_](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster
 - A running [_Red Hat 3scale API Management_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management) platform
 
