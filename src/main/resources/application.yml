@@ -28,6 +28,10 @@ quarkus:
 
   ## Quarkus OpenShift extension configuration
   openshift:
+    # Additional custom labels on all resources
+    labels:
+      # Part of the `Threescale-Extensions` Application Group
+      "app.kubernetes.io/part-of": Threescale-Extensions
     # The build config strategy to use
     build-strategy: docker
     # The default Dockerfile to use for jvm builds
