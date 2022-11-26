@@ -114,7 +114,7 @@ You can run your application in dev mode that enables live coding using:
 4. Adjust the `quarkus.jaeger.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
     ```shell script
-    ./mvnw clean package -Dquarkus.kubernetes.deploy=true
+    ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
     ```
 
 ## 5. How to configure the _APICast Camel Service_ policy to use this service
