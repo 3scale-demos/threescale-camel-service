@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   name: threescale-camel-service-config
 data:
-  camel-proxy-service.port.nonsecure: 9090
-  camel-proxy-service.port.secure: 9443
+  camel-proxy-service.port.nonsecure: '9090'
+  camel-proxy-service.port.secure: '9443'
   camel-proxy-service.keystore.mount-path: /mnt
 ---
 apiVersion: v1
