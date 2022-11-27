@@ -96,7 +96,7 @@ You can run your application in dev mode that enables live coding using:
 - User has self-provisioner privilege or has access to a working OpenShift project
 - **OPTIONAL**: [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)).
 
-### :bulb: Instructions
+### :bulb: Instructions to package using Quarkus JVM mode and deploy to OpenShift
 
 1. Login to the OpenShift cluster
     ```shell script
@@ -116,6 +116,43 @@ You can run your application in dev mode that enables live coding using:
     ```shell script
     ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
     ```
+
+### :bulb: ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
+
+> :warning: **Pre-requisites**
+- For native compilation, a Linux X86_64 operating system or an OCI (Open Container Initiative) compatible container runtime, such as Podman or Docker is required.
+
+1. Login to the OpenShift cluster
+    ```shell script
+    oc login ...
+    ```
+2. Create an OpenShift project or use your existing OpenShift project. For instance, to create `ceq-services-native`
+    ```shell script
+    oc new-project ceq-services-native --display-name="Red Hat Camel Extensions for Quarkus Apps - Native Mode"
+    ```
+3. Create secret containing the keystore
+    ```shell script
+    oc create secret generic threescale-camel-service-keystore-secret \
+    --from-file=keystore.p12=./tls-keys/keystore.p12
+    ```
+4. Adjust the `quarkus.jaeger.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
+5. Package and deploy to OpenShift
+    -  Using podman to build the native binary:
+        ```shell script
+        ./mvnw clean package -Pnative \
+        -Dquarkus.kubernetes.deploy=true \
+        -Dquarkus.native.container-runtime=podman \
+        -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-21-jdk17-rhel8:latest \
+        -Dquarkus.container-image.group=ceq-services-native 
+        ```
+    -  Using docker to build the native binary:
+        ```shell script
+        ./mvnw clean package -Pnative \
+        -Dquarkus.kubernetes.deploy=true \
+        -Dquarkus.native.container-runtime=docker \
+        -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-21-jdk17-rhel8:latest \
+        -Dquarkus.container-image.group=ceq-services-native 
+        ```
 
 ## 5. How to configure the _APICast Camel Service_ policy to use this service
 
