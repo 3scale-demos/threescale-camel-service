@@ -76,8 +76,8 @@ You can run your application in dev mode that enables live coding using:
     [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)). :bulb: A simple way of starting a Jaeger tracing server is with `docker` or `podman`:
     1. Start the Jaeger tracing server:
         ```
-        podman run --rm -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-        -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp \
+        podman run --rm -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_OTLP_ENABLED=true \
+        -p 6831:6831/udp -p 6832:6832/udp \
         -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 9411:9411 \
         quay.io/jaegertracing/all-in-one:latest
         ```
