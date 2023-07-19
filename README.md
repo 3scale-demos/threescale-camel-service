@@ -1,6 +1,6 @@
 # threescale-camel-service
 
-This project leverages **Red Hat build of Quarkus 2.7.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat Camel Extensions for Quarkus 2.7.x**](https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q3/html/getting_started_with_camel_extensions_for_quarkus/index).
+This project leverages **Red Hat build of Quarkus 2.13.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat Camel Extensions for Quarkus 2.13.x**](https://access.redhat.com/documentation/en-us/red_hat_integration/2022.q3/html/getting_started_with_camel_extensions_for_quarkus/index).
 
 This camel proxy service can be leveraged to configure the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
 
@@ -78,7 +78,7 @@ You can run your application in dev mode that enables live coding using:
         ```
         podman run --rm -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_OTLP_ENABLED=true \
         -p 6831:6831/udp -p 6832:6832/udp \
-        -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 9411:9411 \
+        -p 5778:5778 -p 16686:16686 -p 4317:4317 -p 4318:4318 -p 14250:14250  -p 14268:14268 -p 14269:14269 -p 9411:9411 \
         quay.io/jaegertracing/all-in-one:latest
         ```
     2. While the server is running, browse to http://localhost:16686 to view tracing events.
@@ -111,7 +111,7 @@ You can run your application in dev mode that enables live coding using:
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
-4. Adjust the `quarkus.jaeger.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
+4. Adjust the `quarkus.opentelemetry.tracer.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
     ```shell script
     ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
@@ -135,7 +135,7 @@ You can run your application in dev mode that enables live coding using:
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
-4. Adjust the `quarkus.jaeger.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
+4. Adjust the `quarkus.opentelemetry.tracer.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
     -  Using podman to build the native binary:
         ```shell script
@@ -243,7 +243,7 @@ If you enabled [_OpenTracing_](https://access.redhat.com/documentation/en-us/red
 - RESTEasy JAX-RS ([guide](https://quarkus.io/guides/rest-json)): REST endpoint framework implementing JAX-RS and more
 - Camel Bean ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-bean)): Invoke methods of Java beans
 - Kubernetes Config ([guide](https://quarkus.io/guides/kubernetes-config)): Read runtime configuration from Kubernetes ConfigMaps and Secrets
-- Camel OpenTracing ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/opentracing.html)): Distributed tracing using OpenTracing
+- Camel OpenTelemetry ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-opentelemetry)): Distributed tracing using OpenTelemetry
 - Camel Netty HTTP ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/netty-http.html)): Netty HTTP server and client using the Netty 4.x
 
 ## Provided Code

@@ -14,8 +14,8 @@ metadata:
   name: threescale-camel-service-secret
 stringData:
   camel-proxy-service.keystore.passphrase: P@ssw0rd
-  quarkus.oidc-client.auth-server-url: https://sso.apps.cluster-njnx5.njnx5.sandbox969.opentlc.com/auth/realms/openshift-cluster
+  quarkus.oidc-client.auth-server-url: https://sso.apps.cluster-5f9dj.5f9dj.sandbox2939.opentlc.com/auth/realms/openshift-cluster
   quarkus.oidc-client.client-id: threescale-camel-service
-  quarkus.oidc-client.credentials.secret: tUnNnMgrhIE97JVFfVXezfhVAp5jFzUE
-  quarkus.jaeger.endpoint: http://jaeger-all-in-one-inmemory-collector.3scale-amp.svc:14268/api/traces
+  quarkus.oidc-client.credentials.secret: PlrCZJofdrmIanhjz4tfzWEvEcA9piJs
+  quarkus.opentelemetry.tracer.exporter.otlp.endpoint: http://jaeger-all-in-one-inmemory-collector.ceq-services-jvm.svc:4317
 type: Opaque
