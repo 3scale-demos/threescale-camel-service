@@ -1,6 +1,6 @@
 # threescale-camel-service
 
-This project leverages **Red Hat build of Quarkus 3.2.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel 4.x for Quarkus**](https://access.redhat.com/documentation/en-us/red_hat_build_of_apache_camel).
+This project leverages **Red Hat build of Quarkus 3.8.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel 4.4.x for Quarkus**](https://access.redhat.com/documentation/en-us/red_hat_build_of_apache_camel).
 
 This camel proxy service can be leveraged to configure the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
 
@@ -9,7 +9,7 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
 ## O. Prerequisites
 
 - Maven 3.8.1+
-- JDK 17 installed with `JAVA_HOME` configured appropriately
+- JDK 21 installed with `JAVA_HOME` configured appropriately
 - A running [_Red Hat build of Keycloak_](https://access.redhat.com/documentation/en-us/red_hat_build_of_keycloak) instance. The following must be configured:
     1. A confidential client with the following characteristics:
         - Client ID: `threescale-camel-service`
@@ -117,7 +117,7 @@ You can run your application in dev mode that enables live coding using:
 4. Adjust the `quarkus.otel.exporter.otlp.traces.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
     ```shell script
-    ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
+    ./mvnw clean package -Dquarkus.openshift.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
     ```
 
 ### :bulb: ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
@@ -143,7 +143,7 @@ You can run your application in dev mode that enables live coding using:
     -  Using podman to build the native binary:
         ```shell script
         ./mvnw clean package -Pnative \
-        -Dquarkus.kubernetes.deploy=true \
+        -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=podman \
         -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-21-jdk17-rhel8:latest \
         -Dquarkus.container-image.group=ceq-services-native 
@@ -151,7 +151,7 @@ You can run your application in dev mode that enables live coding using:
     -  Using docker to build the native binary:
         ```shell script
         ./mvnw clean package -Pnative \
-        -Dquarkus.kubernetes.deploy=true \
+        -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=docker \
         -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-21-jdk17-rhel8:latest \
         -Dquarkus.container-image.group=ceq-services-native 
