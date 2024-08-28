@@ -14,8 +14,23 @@ metadata:
   name: threescale-camel-service-secret
 stringData:
   camel-proxy-service.keystore.passphrase: P@ssw0rd
-  quarkus.oidc-client.auth-server-url: https://sso.apps.cluster-5f9dj.5f9dj.sandbox2939.opentlc.com/auth/realms/openshift-cluster
+  quarkus.oidc-client.auth-server-url: https://sso.apps.cluster-njb6f.njb6f.sandbox2810.opentlc.com/realms/openshift-cluster
   quarkus.oidc-client.client-id: threescale-camel-service
-  quarkus.oidc-client.credentials.secret: PlrCZJofdrmIanhjz4tfzWEvEcA9piJs
-  quarkus.opentelemetry.tracer.exporter.otlp.endpoint: http://jaeger-all-in-one-inmemory-collector.ceq-services-jvm.svc:4317
+  quarkus.oidc-client.credentials.secret: JTbfN2MbCdaE4ulCghLsanaZAPf951dp
+  quarkus.otel.exporter.otlp.traces.endpoint: http://jaeger-all-in-one-inmemory-collector.ceq-services-jvm.svc:4317
 type: Opaque
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: threescale-camel-service
+  name: threescale-camel-service
+spec:
+  podMetricsEndpoints:
+  - path: /q/metrics
+    port: http
+    scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: threescale-camel-service
