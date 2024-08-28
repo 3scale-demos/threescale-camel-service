@@ -14,7 +14,10 @@
     <!-- Red Hat Camel Extensions for Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>com.redhat.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.8.4.SP2-redhat-00001</quarkus.platform.version>
+    <quarkus.platform.version>3.8.5.SP1-redhat-00001</quarkus.platform.version>
+
+    <!--  Jolokia agent version for a "hawtio-enabled" deployment -->
+    <jolokia.version>2.0.3</jolokia.version>
 
     <!-- Plugins versons -->
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
@@ -64,6 +67,28 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
+    </dependency>
+
+    <!--
+      This dependency is mandatory for enabling Camel management
+      via JMX / Hawtio.
+    -->
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-management</artifactId>
+    </dependency>
+    <!--
+      This dependency is required for viewing Camel routes source XML.
+    -->
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-jaxb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jolokia</groupId>
+      <artifactId>jolokia-agent-jvm</artifactId>
+      <version>${jolokia.version}</version>
+      <classifier>javaagent</classifier>
     </dependency>
 
     <!-- Camel Quarkus Extensions -->
