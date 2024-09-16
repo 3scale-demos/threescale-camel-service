@@ -36,6 +36,9 @@ quarkus:
     deployment-kind: Deployment
     # Part of the `Threescale-Extensions` Application Group
     part-of: Threescale-Extensions
+    # Apache Camel icon
+    labels:
+      app.openshift.io/runtime: camel
     # The build config strategy to use
     build-strategy: DOCKER
     # The default Dockerfile to use for jvm builds
