@@ -28,7 +28,7 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
 
 ## 1. Generate a Java Keystore
 
-```shell script
+```shell
 keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-service -keyalg RSA \
 -dname "CN=threescale-camel-service" \
 -validity 3600 -keystore ./tls-keys/keystore.p12 -v \
@@ -38,7 +38,7 @@ keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-se
 ## 2. Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
-```shell script
+```shell
 ./mvnw quarkus:dev
 ```
 
@@ -47,26 +47,26 @@ You can run your application in dev mode that enables live coding using:
 ## 3. Packaging and running the application locally
 
 1. Execute the following command line:
-    ```shell script
+    ```shell
     ./mvnw package
     ```
     It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
     Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
     The application is now runnable using:
-    ```shell script
+    ```shell
     java -Dquarkus.kubernetes-config.enabled=false -jar target/quarkus-app/quarkus-run.jar
     ```
 
 2. **OPTIONAL:** Creating a native executable
 
     You can create a native executable using: 
-    ```shell script
+    ```shell
     ./mvnw package -Pnative
     ```
 
     Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-    ```shell script
+    ```shell
     ./mvnw package -Pnative -Dquarkus.native.container-build=true
     ```
 
@@ -87,7 +87,7 @@ You can run your application in dev mode that enables live coding using:
     2. While the server is running, browse to http://localhost:16686 to view tracing events.
 
 4. Test locally
-    ```shell script
+    ```shell
     print "GET http://localhost:8080/q/health HTTP/1.1\nHost: localhost\nAccept: */*\n\n" | ncat --no-shutdown --ssl localhost 9443
     ```
 
@@ -102,21 +102,21 @@ You can run your application in dev mode that enables live coding using:
 ### :bulb: Instructions to package using Quarkus JVM mode and deploy to OpenShift
 
 1. Login to the OpenShift cluster
-    ```shell script
+    ```shell
     oc login ...
     ```
 2. Create an OpenShift project or use your existing OpenShift project. For instance, to create `ceq-services-jvm`
-    ```shell script
+    ```shell
     oc new-project ceq-services-jvm --display-name="Red Hat build of Apache Camel for Quarkus Apps - JVM Mode"
     ```
 3. Create secret containing the keystore
-    ```shell script
+    ```shell
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
 4. Adjust the `quarkus.otel.exporter.otlp.traces.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
-    ```shell script
+    ```shell
     ./mvnw clean package -Dquarkus.openshift.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
     ```
 
@@ -126,22 +126,22 @@ You can run your application in dev mode that enables live coding using:
 - For native compilation, a Linux X86_64 operating system or an OCI (Open Container Initiative) compatible container runtime, such as Podman or Docker is required.
 
 1. Login to the OpenShift cluster
-    ```shell script
+    ```shell
     oc login ...
     ```
 2. Create an OpenShift project or use your existing OpenShift project. For instance, to create `ceq-services-native`
-    ```shell script
+    ```shell
     oc new-project ceq-services-native --display-name="Red Hat build of Apache Camel for Quarkus Apps - Native Mode"
     ```
 3. Create secret containing the keystore
-    ```shell script
+    ```shell
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
 4. Adjust the `quarkus.otel.exporter.otlp.traces.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
 5. Package and deploy to OpenShift
     -  Using podman to build the native binary:
-        ```shell script
+        ```shell
         ./mvnw clean package -Pnative \
         -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=podman \
@@ -149,7 +149,7 @@ You can run your application in dev mode that enables live coding using:
         -Dquarkus.container-image.group=ceq-services-native 
         ```
     -  Using docker to build the native binary:
-        ```shell script
+        ```shell
         ./mvnw clean package -Pnative \
         -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=docker \
@@ -180,10 +180,10 @@ Below is a screenshot of the [_Camel Service_](https://access.redhat.com/documen
 
 Below is a sample test where you can notice the `Authorization` HTTP header added and populated with the retrieved OpenID Connect access token (`HTTP_AUTHORIZATION` header in the `Echo API` response):
 
-```shell script
+```shell
 http -v 'https://echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com:443/demo' user_key:fb61a7d34e82c83b029216a3ca2e24e6
 ```
-```shell script
+```shell
 GET /demo HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
