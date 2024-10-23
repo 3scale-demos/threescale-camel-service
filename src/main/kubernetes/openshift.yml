@@ -17,20 +17,5 @@ stringData:
   quarkus.oidc-client.auth-server-url: https://sso.apps.ocp4.jnyilimb.eu/realms/openshift-cluster
   quarkus.oidc-client.client-id: threescale-camel-service
   quarkus.oidc-client.credentials.secret: iVWejQ2fpWFsvAPJtkWWUQACzkY7ad7a
-  quarkus.otel.exporter.otlp.traces.endpoint: http://jaeger-es-collector.observability.svc:4317
+  quarkus.otel.exporter.otlp.traces.endpoint: http://tempo-simple-distributor.observability.svc:4317
 type: Opaque
----
-apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
-metadata:
-  labels:
-    app.kubernetes.io/name: threescale-camel-service
-  name: threescale-camel-service
-spec:
-  podMetricsEndpoints:
-  - path: /q/metrics
-    port: http
-    scheme: http
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: threescale-camel-service
