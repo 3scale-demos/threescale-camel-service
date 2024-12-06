@@ -6,7 +6,7 @@
   <artifactId>threescale-camel-service</artifactId>
   <version>1.0.0</version>
   <properties>
-    <compiler-plugin.version>3.12.1</compiler-plugin.version>
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -14,13 +14,13 @@
     <!-- Red Hat Camel Extensions for Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>com.redhat.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.8.5.SP1-redhat-00001</quarkus.platform.version>
+    <quarkus.platform.version>3.15.2.redhat-00003</quarkus.platform.version>
 
     <!--  Jolokia agent version for a "hawtio-enabled" deployment -->
-    <jolokia.version>2.0.3</jolokia.version>
+    <jolokia.version>2.1.1</jolokia.version>
 
     <!-- Plugins versons -->
-    <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <surefire-plugin.version>3.3.1</surefire-plugin.version>
 
     <skipITs>true</skipITs>
   </properties>
@@ -109,8 +109,8 @@
       <artifactId>camel-quarkus-micrometer</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-registry-prometheus</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>

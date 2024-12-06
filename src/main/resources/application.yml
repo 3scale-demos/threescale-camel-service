@@ -63,7 +63,7 @@ quarkus:
     resources:
         requests:
             cpu: 30m
-            memory: 512Mi
+            memory: 256Mi
         limits:
             cpu: 500m
             memory: 256Mi
@@ -113,13 +113,13 @@ quarkus:
       enabled: true
 
     # Micrometer Camel Metrics
-    # Cf. https://camel.apache.org/camel-quarkus/3.2.x/reference/extensions/micrometer.html
+    # Cf. https://camel.apache.org/camel-quarkus/3.15.x/reference/extensions/micrometer.html
     metrics:
       enable-route-policy: true
       enable-message-history: true
       enable-exchange-event-notifier: true
       enable-route-event-notifier: true
-      enable-instrumented-thread-pool-factory: false
+      enable-instrumented-thread-pool-factory: true
 
     # native mode configuration
     native:
