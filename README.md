@@ -1,6 +1,6 @@
 # threescale-camel-service
 
-This project leverages **Red Hat build of Quarkus 3.8.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel 4.4.x for Quarkus**](https://access.redhat.com/documentation/en-us/red_hat_build_of_apache_camel).
+This project leverages **Red Hat build of Quarkus 3.15.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel for Quarkus v4.8.x**](https://access.redhat.com/documentation/en-us/red_hat_build_of_apache_camel).
 
 This camel proxy service can be leveraged to configure the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
 
@@ -39,7 +39,7 @@ keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-se
 
 You can run your application in dev mode that enables live coding using:
 ```shell
-./mvnw quarkus:dev
+./mvnw compile quarkus:dev
 ```
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
