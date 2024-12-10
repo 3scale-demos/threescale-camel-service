@@ -145,7 +145,6 @@ You can run your application in dev mode that enables live coding using:
         ./mvnw clean package -Pnative \
         -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=podman \
-        -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-for-jdk-21-rhel8:latest\
         -Dquarkus.container-image.group=ceq-services-native 
         ```
     -  Using docker to build the native binary:
@@ -153,7 +152,6 @@ You can run your application in dev mode that enables live coding using:
         ./mvnw clean package -Pnative \
         -Dquarkus.openshift.deploy=true \
         -Dquarkus.native.container-runtime=docker \
-        -Dquarkus.native.builder-image=registry.access.redhat.com/quarkus/mandrel-for-jdk-21-rhel8:latest\
         -Dquarkus.container-image.group=ceq-services-native 
         ```
 
