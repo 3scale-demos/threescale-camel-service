@@ -102,6 +102,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-direct</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-opentelemetry</artifactId>
     </dependency>
     <dependency>
