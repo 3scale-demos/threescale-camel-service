@@ -1,4 +1,4 @@
-package org.jeannyil.Processors;
+package org.jeannyil.processors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
