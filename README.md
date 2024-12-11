@@ -14,8 +14,8 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
     1. A confidential client with the following characteristics:
         - Client ID: `threescale-camel-service`
         - Client Protocol: `openid-connect`
-        - Access type: `confidential`
-        - OpenID Connect flow: `service account (client credentials)`
+        - Client authentication: `on`
+        - Authentication flow: `service accounts roles (client credentials)`
     2. Replace the `client secret` in:
         - `quarkus.oidc-client.credentials.secret` property in the [`application.yml`](./src/main/resources/application.yml) file
         - `quarkus.oidc-client.credentials.secret` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file
