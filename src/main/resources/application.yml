@@ -63,10 +63,10 @@ quarkus:
     resources:
         requests:
             cpu: 30m
-            memory: 256Mi
+            memory: 512Mi
         limits:
             cpu: 500m
-            memory: 256Mi
+            memory: 512Mi
     # The type of service that will be generated for the application
     service-type: ClusterIP
     # Secret to mount and where to mount it
