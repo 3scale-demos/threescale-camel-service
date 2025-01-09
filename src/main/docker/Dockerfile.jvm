@@ -90,15 +90,7 @@ COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
 USER 185
-
-# Add Jolokia agent configuration for the connection with Hawtio Online
-# It should use HTTPS and SSL client authentication at minimum.
-# The client principal should match those the Hawtio Online instance
-# provides (the default is `hawtio-online.hawtio.svc`).
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 \
-                      -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
-                      -javaagent:/deployments/lib/main/org.jolokia.jolokia-agent-jvm-2.1.1-javaagent.jar=caCert=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt,clientPrincipal=cn=hawtio-online.hawtio.svc,discoveryEnabled=false,host=*,port=8778,protocol=https,useSslClientAuthentication=true"
-
+ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]

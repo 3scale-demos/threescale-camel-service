@@ -16,10 +16,26 @@
     <quarkus.platform.group-id>com.redhat.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>3.15.2.redhat-00003</quarkus.platform.version>
 
-    <!--  Jolokia agent version for a "hawtio-enabled" deployment -->
+    <!--  The current HawtIO Jolokia Version -->
     <jolokia.version>2.1.1</jolokia.version>
 
-    <!-- Plugins versons -->
+    <!--
+    ===============================================================
+    === Jolokia agent configuration for the connection with HawtIO
+    ===============================================================
+    It should use HTTPS and SSL client authentication at minimum.
+    The client principal should match those the HawtIO instance provides (the default is `hawtio-online.hawtio.svc`).
+  	-->
+  	<jolokia.protocol>https</jolokia.protocol>
+  	<jolokia.host>*</jolokia.host>
+  	<jolokia.port>8778</jolokia.port>
+	  <jolokia.useSslClientAuthentication>true</jolokia.useSslClientAuthentication>
+	  <jolokia.caCert>/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt</jolokia.caCert>
+  	<jolokia.clientPrincipal.1>cn=hawtio-online.hawtio.svc</jolokia.clientPrincipal.1>
+  	<jolokia.extendedClientCheck>true</jolokia.extendedClientCheck>
+  	<jolokia.discoveryEnabled>false</jolokia.discoveryEnabled>
+
+    <!-- Plugins versions -->
     <surefire-plugin.version>3.3.1</surefire-plugin.version>
 
     <skipITs>true</skipITs>
@@ -84,6 +100,10 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-jaxb</artifactId>
     </dependency>
+    <!--
+      This dependency is required to include the Jolokia agent jvm for
+	    access to JMX beans.
+    -->
     <dependency>
       <groupId>org.jolokia</groupId>
       <artifactId>jolokia-agent-jvm</artifactId>
@@ -219,6 +239,13 @@
         </configuration>
       </plugin>
     </plugins>
+    <!-- Ensure that maven properties can be passed through to the resources -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
   
   <profiles>
