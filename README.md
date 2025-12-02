@@ -35,7 +35,7 @@ keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-se
 -ext san=DNS:threescale-camel-service.svc,DNS:threescale-camel-service.svc.cluster.local,DNS:threescale-camel-service.camel-quarkus.svc,DNS:threescale-camel-service.camel-quarkus.svc.cluster.local,DNS:threescale-camel-service.ceq-services-jvm.svc,DNS:threescale-camel-service.ceq-services-jvm.svc.cluster.local,DNS:threescale-camel-service.ceq-services-native.svc,DNS:threescale-camel-service.ceq-services-native.svc.cluster.local
 ```
 
-## 2. Running the application in dev mode
+## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
 ```shell
