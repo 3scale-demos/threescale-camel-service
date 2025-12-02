@@ -101,7 +101,7 @@ You can run your application in dev mode that enables live coding using:
 
 3. Running Jaeger locally
 
-    [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)). :bulb: A simple way of starting a Jaeger tracing server is with `docker` or `podman`:
+    [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)). A simple way of starting a Jaeger tracing server is with `docker` or `podman`:
     1. Start the Jaeger tracing server:
         ```
         podman run --rm -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_OTLP_ENABLED=true \
@@ -146,7 +146,7 @@ You can run your application in dev mode that enables live coding using:
     ./mvnw clean package -Dquarkus.openshift.deploy=true
     ```
 
-### :bulb: ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
+### ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
 
 > :warning: **Pre-requisites**
 - For native compilation, a Linux X86_64 operating system or an OCI (Open Container Initiative) compatible container runtime, such as Podman or Docker is required.
@@ -177,7 +177,7 @@ You can run your application in dev mode that enables live coding using:
 
 - An API Product configured in _Red Hat 3scale API Management_. For instance, the sample `Echo API` can be used.
 
-### :bulb: Instructions
+### Instructions
 
 1. Add and configure the [_APICast Camel Service_](https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy on the API Product
     - Reference: https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/transform-with-policy-extension_3scale#configure-apicast-policy-extension-in-fuse_3scale
