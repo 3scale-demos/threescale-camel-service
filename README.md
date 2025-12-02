@@ -1,14 +1,14 @@
 # threescale-camel-service
 
-This project leverages **Red Hat build of Quarkus 3.15.x**, the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel v4.8.x for Quarkus**](https://access.redhat.com/documentation/en-us/red_hat_build_of_apache_camel).
+This project leverages [**Red Hat build of Quarkus 3.27.x**](https://docs.redhat.com/en/documentation/red_hat_build_of_quarkus/3.27), the Supersonic Subatomic Java Framework. More specifically, the project is implemented using [**Red Hat build of Apache Camel v4.14.x for Quarkus**](https://docs.redhat.com/en/documentation/red_hat_build_of_apache_camel/4.14#Red%20Hat%20build%20of%20Apache%20Camel%20for%20Quarkus).
 
-This camel proxy service can be leveraged to configure the [_Red Hat 3scale APIcast Camel Service policy_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
+This camel proxy service can be leveraged to configure the [_Red Hat 3scale APIcast Camel Service policy_](https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies). 
 
 The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an access token from _Red Hat build of Keycloak_, and then sets it in the _Authorization_ HTTP header before proxying the request to the upstream backend.
 
-## O. Prerequisites
+## Prerequisites
 
-- Maven 3.8.1+
+- Apache Maven 3.9.9
 - JDK 21 installed with `JAVA_HOME` configured appropriately
 - A running [_Red Hat build of Keycloak_](https://access.redhat.com/documentation/en-us/red_hat_build_of_keycloak) instance. The following must be configured:
     1. A confidential client with the following characteristics:
@@ -26,7 +26,7 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
 - A running [_Red Hat 3scale API Management_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management) platform
 
 
-## 1. Generate a Java Keystore
+## Generate a Java Keystore
 
 ```shell
 keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-service -keyalg RSA \
@@ -39,16 +39,16 @@ keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-se
 
 You can run your application in dev mode that enables live coding using:
 ```shell
-./mvnw compile quarkus:dev
+./mvnw clean compile quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev-ui.
 
-## 3. Packaging and running the application locally
+## Packaging and running the application locally
 
 1. Execute the following command line:
     ```shell
-    ./mvnw package
+    ./mvnw clean package
     ```
     It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
     Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
@@ -58,21 +58,46 @@ You can run your application in dev mode that enables live coding using:
     java -Dquarkus.kubernetes-config.enabled=false -jar target/quarkus-app/quarkus-run.jar
     ```
 
+    If you want to build an _über-jar_, execute the following command:
+    ```shell
+    ./mvnw package -Dquarkus.package.type=uber-jar
+    ```
+
+    The application, packaged as an _über-jar_, is now runnable using:
+    ```shell
+    java -Dquarkus.kubernetes-config.enabled=false -jar target/*-runner.jar`
+    ```
+
 2. **OPTIONAL:** Creating a native executable
 
-    You can create a native executable using: 
+    You can create a native executable using the following command:
+
     ```shell
-    ./mvnw package -Pnative
+    ./mvnw clean package -Pnative -Dquarkus.native.native-image-xmx=7g
     ```
 
-    Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-    ```shell
-    ./mvnw package -Pnative -Dquarkus.native.container-build=true
-    ```
+    >**NOTE** : The project is configured to use a container runtime for native builds. See `quarkus.native.container-build=true` in the [`application.yml`](./src/main/resources/application.yml). Also, adjust the `quarkus.native.native-image-xmx` value according to your container runtime available memory resources.
 
-    You can then execute your native executable with: `./target/threescale-camel-service-1.0.0-SNAPSHOT-runner`
+    You can then execute your native executable with: `./target/threescale-camel-service-1.0.0-runner`
 
-    If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+    If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+
+    >**NOTE** : If your are on Apple Silicon and built the native image inside a Linux container (`-Dquarkus.native.container-build=true`), the result is a Linux ELF binary. macOS can’t execute Linux binaries, so launching it on macOS yields “`exec format error`”. Follow the steps below to run your Linux native binary.
+
+    1. Build the container image of your Linux native binary:
+        ```shell
+        podman build -f src/main/docker/Dockerfile.native -t threescale-camel-service .
+        ```
+    2. Run the container:
+        ```shell
+        podman run --rm --name threescale-camel-service \
+        -p 9443:9443,9876:9876 \
+        -e QUARKUS_KUBERNETES-CONFIG_ENABLED=false \
+        -e QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT=http://host.containers.internal:4317 \
+        -e CAMEL-PROXY-SERVICE.KEYSTORE.MOUNT-PATH=/mnt \
+        -v ./tls-keys/keystore.p12:/mnt/keystore.p12:ro \
+        threescale-camel-service
+        ```
 
 3. Running Jaeger locally
 
@@ -88,18 +113,19 @@ You can run your application in dev mode that enables live coding using:
 
 4. Test locally
     ```shell
-    print "GET http://localhost:8080/q/health HTTP/1.1\nHost: localhost\nAccept: */*\n\n" | ncat --no-shutdown --ssl localhost 9443
+    printf 'GET http://localhost:9876/observe/health HTTP/1.1\r\nHost: localhost\r\nAccept: */*\r\nProxy-Connection: keep-alive\r\nConnection: close\r\n\r\n' | \
+    ncat --ssl localhost 9443
     ```
 
-## 4. Packaging and running the application on Red Hat OpenShift
+## Packaging and running the application on Red Hat OpenShift
 
-### :bulb: Pre-requisites
+### Pre-requisites
 
 - Access to a [Red Hat OpenShift](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster v4
 - User has self-provisioner privilege or has access to a working OpenShift project
 - **OPTIONAL**: [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)).
 
-### :bulb: Instructions to package using Quarkus JVM mode and deploy to OpenShift
+### Instructions to package using Quarkus JVM mode and deploy to OpenShift
 
 1. Login to the OpenShift cluster
     ```shell
@@ -114,10 +140,10 @@ You can run your application in dev mode that enables live coding using:
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
-4. Adjust the `quarkus.otel.exporter.otlp.traces.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
-5. Package and deploy to OpenShift
+4. Adjust the `quarkus.otel.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
+5. Deploy to OpenShift using the _**S2I binary workflow**_
     ```shell
-    ./mvnw clean package -Dquarkus.openshift.deploy=true -Dquarkus.container-image.group=ceq-services-jvm
+    ./mvnw clean package -Dquarkus.openshift.deploy=true
     ```
 
 ### :bulb: ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
@@ -138,41 +164,31 @@ You can run your application in dev mode that enables live coding using:
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
-4. Adjust the `quarkus.otel.exporter.otlp.traces.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
-5. Package and deploy to OpenShift
-    -  Using podman to build the native binary:
-        ```shell
-        ./mvnw clean package -Pnative \
-        -Dquarkus.openshift.deploy=true \
-        -Dquarkus.native.container-runtime=podman \
-        -Dquarkus.container-image.group=ceq-services-native 
-        ```
-    -  Using docker to build the native binary:
-        ```shell
-        ./mvnw clean package -Pnative \
-        -Dquarkus.openshift.deploy=true \
-        -Dquarkus.native.container-runtime=docker \
-        -Dquarkus.container-image.group=ceq-services-native 
-        ```
+4. Adjust the `quarkus.otel.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
+5. Package and deploy to OpenShift using the _**S2I binary workflow**_:
+    ```shell
+    ./mvnw clean package -Pnative \
+    -Dquarkus.openshift.deploy=true
+    ```
 
-## 5. How to configure the _APICast Camel Service_ policy to use this service
+## How to configure the _APICast Camel Service_ policy to use this service
 
-### :bulb: Pre-requisite
+### Pre-requisite
 
 - An API Product configured in _Red Hat 3scale API Management_. For instance, the sample `Echo API` can be used.
 
 ### :bulb: Instructions
 
-1. Add and configure the [_APICast Camel Service_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.14/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy on the API Product
-    - Reference: https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.14/html/administering_the_api_gateway/transform-with-policy-extension_3scale#configure-apicast-policy-extension-in-fuse_3scale
+1. Add and configure the [_APICast Camel Service_](https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy on the API Product
+    - Reference: https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/transform-with-policy-extension_3scale#configure-apicast-policy-extension-in-fuse_3scale
 2. Beware of the following note:
     > **NOTE**: 
     You cannot use `curl` (or any other HTTP client) to test the Camel HTTP proxy directly because the proxy does not support HTTP tunneling using the `CONNECT` method. When using HTTP tunneling with `CONNECT`, the transport is end-to-end encrypted, which does not allow the Camel HTTP proxy to mediate the payload. 
     You may test this with 3scale, which implements this as if proxying via HTTP but establishes a new TLS session towards the Camel application. If you need to perform integration tests against the Camel application you need to use a custom HTTP client. 
     You can use something like: 
-    `print "GET https://<backend url> HTTP/1.1\nHost: <backend host>\nAccept: */*\n\n" | ncat --no-shutdown --ssl <camel proxy app host> <camel proxy app port>`
+    `printf 'GET https://<backend url> HTTP/1.1\r\nHost: <backend_host>\r\nAccept: */*\r\nProxy-Connection: keep-alive\r\nConnection: close\r\n\r\n' | ncat --ssl <camel_proxy_app_host> <camel_proxy_app_port>`
 
-Below is a screenshot of the [_Camel Service_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.12/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy configuration:
+Below is a screenshot of the [_Camel Service_](https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16/html/administering_the_api_gateway/apicast-policies#camel-service_standard-policies) policy configuration:
 
 ![APICast Camel Service Policy](./images/CamelServicePolicy.png)
 
