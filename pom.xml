@@ -6,7 +6,7 @@
   <artifactId>threescale-camel-service</artifactId>
   <version>1.0.0</version>
   <properties>
-    <compiler-plugin.version>3.13.0</compiler-plugin.version>
+    <compiler-plugin.version>3.14.0</compiler-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -14,29 +14,10 @@
     <!-- Red Hat Camel Extensions for Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>com.redhat.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.15.2.redhat-00003</quarkus.platform.version>
-
-    <!--  The current HawtIO Jolokia Version -->
-    <jolokia.version>2.1.1</jolokia.version>
-
-    <!--
-    ===============================================================
-    === Jolokia agent configuration for the connection with HawtIO
-    ===============================================================
-    It should use HTTPS and SSL client authentication at minimum.
-    The client principal should match those the HawtIO instance provides (the default is `hawtio-online.hawtio.svc`).
-  	-->
-  	<jolokia.protocol>https</jolokia.protocol>
-  	<jolokia.host>*</jolokia.host>
-  	<jolokia.port>8778</jolokia.port>
-	  <jolokia.useSslClientAuthentication>true</jolokia.useSslClientAuthentication>
-	  <jolokia.caCert>/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt</jolokia.caCert>
-  	<jolokia.clientPrincipal.1>cn=hawtio-online.hawtio.svc</jolokia.clientPrincipal.1>
-  	<jolokia.extendedClientCheck>true</jolokia.extendedClientCheck>
-  	<jolokia.discoveryEnabled>false</jolokia.discoveryEnabled>
+    <quarkus.platform.version>3.27.0.redhat-00002</quarkus.platform.version>
 
     <!-- Plugins versions -->
-    <surefire-plugin.version>3.3.1</surefire-plugin.version>
+    <surefire-plugin.version>3.5.3</surefire-plugin.version>
 
     <skipITs>true</skipITs>
   </properties>
@@ -78,39 +59,12 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
+      <artifactId>quarkus-rest</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
-
-    <!--
-      This dependency is mandatory for enabling Camel management
-      via JMX / Hawtio.
-    -->
-    <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-management</artifactId>
-    </dependency>
-    <!--
-      This dependency is required for viewing Camel routes source XML.
-    -->
-    <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-jaxb</artifactId>
-    </dependency>
-    <!--
-      This dependency is required to include the Jolokia agent jvm for
-	    access to JMX beans.
-    -->
-    <dependency>
-      <groupId>org.jolokia</groupId>
-      <artifactId>jolokia-agent-jvm</artifactId>
-      <version>${jolokia.version}</version>
-      <classifier>javaagent</classifier>
-    </dependency>
-
     <!-- Camel Quarkus Extensions -->
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
@@ -130,19 +84,18 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-opentelemetry</artifactId>
+      <artifactId>camel-quarkus-observability-services</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-micrometer</artifactId>
+      <artifactId>camel-quarkus-jolokia</artifactId>
     </dependency>
-    <dependency>
+
+    <!-- For Dev Mode  -->
+    <dependency><!-- Enables the LGTM Dev Service -->
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-microprofile-health</artifactId>
+      <artifactId>quarkus-observability-devservices-lgtm</artifactId>
+      <scope>provided</scope>
     </dependency>
     
     <!-- Quarkus Test dependencies -->
@@ -239,13 +192,6 @@
         </configuration>
       </plugin>
     </plugins>
-    <!-- Ensure that maven properties can be passed through to the resources -->
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
   </build>
   
   <profiles>

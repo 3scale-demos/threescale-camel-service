@@ -41,6 +41,5 @@ nb-configuration.xml
 
 # Plugin directory
 /.quarkus/cli/plugins/
-
-# Camel JBang
-.camel-jbang/
+# TLS Certificates
+.certs/
