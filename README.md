@@ -65,7 +65,7 @@ You can run your application in dev mode that enables live coding using:
 
     The application, packaged as an _über-jar_, is now runnable using:
     ```shell
-    java -Dquarkus.kubernetes-config.enabled=false -jar target/*-runner.jar`
+    java -Dquarkus.kubernetes-config.enabled=false -jar target/*-runner.jar
     ```
 
 2. **OPTIONAL:** Creating a native executable
@@ -113,8 +113,48 @@ You can run your application in dev mode that enables live coding using:
 
 4. Test locally
     ```shell
-    printf 'GET http://localhost:9876/observe/health HTTP/1.1\r\nHost: localhost\r\nAccept: */*\r\nProxy-Connection: keep-alive\r\nConnection: close\r\n\r\n' | \
+    printf 'GET https://echo-api.3scale.net/demo HTTP/1.1\r\nHost: echo-api.3scale.net\r\nAccept: */*\r\nProxy-Connection: keep-alive\r\nConnection: close\r\n\r\n' | \
     ncat --ssl localhost 9443
+    ```
+    Sample output:
+    ```shell
+    HTTP/1.1 200 OK
+    content-length: 1992
+    server: envoy
+    vary: Origin
+    x-3scale-echo-api: echo-api/1.0.3
+    x-content-type-options: nosniff
+    x-envoy-upstream-service-time: 0
+    content-type: application/json
+    connection: close
+
+    {
+        "method": "GET",
+        "path": "/demo",
+        "args": "",
+        "body": "",
+        "headers": {
+            "HTTP_VERSION": "HTTP/1.1",
+            "HTTP_HOST": "echo-api.3scale.net",
+            "HTTP_ACCEPT": "*/*,*/*",
+            "CONTENT_LENGTH": "0",
+            "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6bXRzSnd0WWxBd2JxOHplMlZNWDZDU0hOMG9OcW5scU0zbDBwX1dBWm1vIn0.eyJleHAiOjE3NjQ3NjY4NjIsImlhdCI6MTc2NDc2NjU2MiwianRpIjoidHJydGNjOjhlY2NiYzdkLWQyNzYtYTM4NC1iOGRkLTk1N2E0MzkzZTY2YiIsImlzcyI6Imh0dHBzOi8vc3NvLmFwcHMub2NwNC5qbnlpbGltYi5ldS9yZWFsbXMvZGVtbyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1NjkyNGQ2NC1iZDNkLTQ0ZjYtYTRkYS03ZTJmODcwYmIyOGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtZGVtbyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMTAuMTI4LjAuMiIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJjbGllbnRBZGRyZXNzIjoiMTAuMTI4LjAuMiIsImNsaWVudF9pZCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSJ9.ITQ6FhE5oKux1-4bVtqKCiRV2FMiW8ID2Tcs6VB2iedGjwuKOCo82N3_jV_6hAXOng3mmpLrVq8l1KzSp6nYC8icHT_y61UZDZ_xd2km8YGw9bMJVzrUQb4cuboGH2wIijgFwaQ7lCsjAhnmIFhgy8szAvvULoZS93D7TSxaSy1QpyqkixNrf6y5z1HjLhFvUu--ejWGDwZfY0ICIE2MGa1HcBe1KDonA_ZPHzOzQq7OYDZb3FZ-Tat1gN7QMeHh6U8C-IsiNlQk6VXE7Mrm53QoSnttGVHvWmMrNMY9ebYMVsGchAOT968w8MXP8Xj9TNKJH8HqWzaIeCS7k7-2xg",
+            "HTTP_TRACEPARENT": "00-280e6e63cfd60f55d263c7a7c20ebc42-f2fe175e72c4ea37-01",
+            "HTTP_X_FORWARDED_FOR": "***.***.***.***",
+            "HTTP_X_FORWARDED_PROTO": "https",
+            "HTTP_X_ENVOY_EXTERNAL_ADDRESS": "***.***.***.***",
+            "HTTP_X_REQUEST_ID": "582d6675-9e46-4ae2-95cd-bc36a36e44ab",
+            "HTTP_X_ENVOY_EXPECTED_RQ_TIMEOUT_MS": "15000"
+        },
+        "uuid": "4a4b95f2-1602-4617-b891-510dad0ebeae"
+    }
+    ```
+
+    >**INFO**: The camel service listening on port `9443` proxies the HTTP request to the `echo-api.3scale.net` server. You should see the following lines in the camel service proxy logs:
+    ```log
+    2025-12-03 12:56:06,772 INFO  traceId=, parentId=, spanId=, sampled= [or.je.ro.CamelProxyRoute] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Incoming headers: {Accept=*/*, CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, CamelHttpPath=/demo, CamelHttpPort=443, CamelHttpQuery=null, CamelHttpRawQuery=null, CamelHttpScheme=https, CamelHttpUri=/demo, CamelHttpUrl=https://echo-api.3scale.net/demo, CamelNettyChannelHandlerContext=ChannelHandlerContext(handler, [id: 0x9f5c37cf, L:/10.88.0.131:9443 - R:/192.168.127.1:46100]), CamelNettyLocalAddress=/10.88.0.131:9443, CamelNettyRemoteAddress=/192.168.127.1:46100, CamelNettySSLSession=Session(1764766566762|TLS_AES_256_GCM_SHA384), Connection=close, content-length=0, Host=echo-api.3scale.net}
+    2025-12-03 12:56:06,772 INFO  traceId=, parentId=, spanId=, sampled= [or.je.ro.CamelProxyRoute] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Headers after processor: {Accept=*/*, authorization=Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6bXRzSnd0WWxBd2JxOHplMlZNWDZDU0hOMG9OcW5scU0zbDBwX1dBWm1vIn0.eyJleHAiOjE3NjQ3NjY4NjIsImlhdCI6MTc2NDc2NjU2MiwianRpIjoidHJydGNjOjhlY2NiYzdkLWQyNzYtYTM4NC1iOGRkLTk1N2E0MzkzZTY2YiIsImlzcyI6Imh0dHBzOi8vc3NvLmFwcHMub2NwNC5qbnlpbGltYi5ldS9yZWFsbXMvZGVtbyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1NjkyNGQ2NC1iZDNkLTQ0ZjYtYTRkYS03ZTJmODcwYmIyOGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtZGVtbyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMTAuMTI4LjAuMiIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJjbGllbnRBZGRyZXNzIjoiMTAuMTI4LjAuMiIsImNsaWVudF9pZCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSJ9.ITQ6FhE5oKux1-4bVtqKCiRV2FMiW8ID2Tcs6VB2iedGjwuKOCo82N3_jV_6hAXOng3mmpLrVq8l1KzSp6nYC8icHT_y61UZDZ_xd2km8YGw9bMJVzrUQb4cuboGH2wIijgFwaQ7lCsjAhnmIFhgy8szAvvULoZS93D7TSxaSy1QpyqkixNrf6y5z1HjLhFvUu--ejWGDwZfY0ICIE2MGa1HcBe1KDonA_ZPHzOzQq7OYDZb3FZ-Tat1gN7QMeHh6U8C-IsiNlQk6VXE7Mrm53QoSnttGVHvWmMrNMY9ebYMVsGchAOT968w8MXP8Xj9TNKJH8HqWzaIeCS7k7-2xg, CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, CamelHttpPath=/demo, CamelHttpPort=443, CamelHttpQuery=null, CamelHttpRawQuery=null, CamelHttpScheme=https, CamelHttpUri=/demo, CamelHttpUrl=https://echo-api.3scale.net/demo, CamelNettyChannelHandlerContext=ChannelHandlerContext(handler, [id: 0x9f5c37cf, L:/10.88.0.131:9443 - R:/192.168.127.1:46100]), CamelNettyLocalAddress=/10.88.0.131:9443, CamelNettyRemoteAddress=/192.168.127.1:46100, CamelNettySSLSession=Session(1764766566762|TLS_AES_256_GCM_SHA384), Connection=close, content-length=0, Host=echo-api.3scale.net}
+    2025-12-03 12:56:06,773 INFO  traceId=, parentId=, spanId=, sampled= [or.ap.ca.co.ne.ht.HttpClientInitializerFactory] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Created SslContext javax.net.ssl.SSLContext@e375928
     ```
 
 ## Packaging and running the application on Red Hat OpenShift
@@ -226,7 +266,7 @@ x-envoy-upstream-service-time: 1
         "HTTP_ACCEPT": "*/*,*/*",
         "HTTP_ACCEPT_ENCODING": "gzip, deflate,gzip, deflate",
         "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJYbHBmQzVaT3dZUVZVdlRHREppRmxMT3lVTXhFZkFLSUdiMDdxcEN6dlBBIn0.eyJleHAiOjE2NjAxMzY3NzcsImlhdCI6MTY2MDEzNjQ3NywianRpIjoiNTUxMWJkNjgtNTk4ZS00YTU2LTk5YTUtYTdjZDk2NjFlMzhlIiwiaXNzIjoiaHR0cHM6Ly9zc28uYXBwcy5jbHVzdGVyLWw1bXQ1Lmw1bXQ1LnNhbmRib3gxODczLm9wZW50bGMuY29tL2F1dGgvcmVhbG1zL29wZW5zaGlmdC1jbHVzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6Ijc1MzljOGVkLTgxNWQtNGFiMC04N2FiLTNlYTFjNDYzZTc3MyIsInR5cCI6IkJlYXJlciIsImF6cCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW9wZW5zaGlmdC1jbHVzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImNsaWVudElkIjoidGhyZWVzY2FsZS1jYW1lbC1zZXJ2aWNlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMy43NC42Ny4yNDgiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtdGhyZWVzY2FsZS1jYW1lbC1zZXJ2aWNlIiwiY2xpZW50QWRkcmVzcyI6IjMuNzQuNjcuMjQ4In0.R2r5ByPw8HwcDAZzWOxpRzFKQu7dhp6aPJkT1j-UAAhVMYsqQRzWhb0nBN1Pd7svyy1pZqI_brmKSkprkCcOH8evgokDqTsTwW8DGtrBNCEEaigSwuRGnctWK2nhifjQBg3hbLxN5PO_VUXmn5bLvk6N0WKvAyFcgM-EMQXwrBEw80MjM6EnOuSAyY0vYyAK2_D_UNgtMy0sCVFH0_sMLjQBWn1ppoRkLxCSdFyF7RmPhLUVDtC7mfZ5jGYgVIzMR6rW2FvUIukycPGjsEWL9PiyIub_2ocOvgXxGMggV_rIjeI3j6jEQ-BGTLfWzeVOPTBkk2vcucyd9QgZBCPe3A",
-        "HTTP_FORWARDED": "for=92.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https, for=92.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https",
+        "HTTP_FORWARDED": "for=**.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https, for=**.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https",
         "HTTP_HOST": "echo-api.3scale.net",
         "HTTP_UBER_TRACE_ID": "3571087cfb4b59b3:f187ff011680923e:3571087cfb4b59b3:1, 3571087cfb4b59b3:a125cfd990a3369e:e1ebfb5bbe241762:1",
         "HTTP_USER_AGENT": "HTTPie/3.2.1,HTTPie/3.2.1",
@@ -234,7 +274,7 @@ x-envoy-upstream-service-time: 1
         "HTTP_VERSION": "HTTP/1.1",
         "HTTP_X_ENVOY_EXPECTED_RQ_TIMEOUT_MS": "15000",
         "HTTP_X_ENVOY_EXTERNAL_ADDRESS": "3.74.67.248",
-        "HTTP_X_FORWARDED_FOR": "92.169.228.162,92.169.228.162,3.74.67.248",
+        "HTTP_X_FORWARDED_FOR": "**.169.228.162,**.169.228.162,3.74.67.248",
         "HTTP_X_FORWARDED_HOST": "echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com, echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com",
         "HTTP_X_FORWARDED_PORT": "443, 443",
         "HTTP_X_FORWARDED_PROTO": "https",
