@@ -14,9 +14,9 @@ metadata:
   name: threescale-camel-service-secret
 stringData:
   camel-proxy-service.keystore.passphrase: P@ssw0rd
-  quarkus.oidc-client.auth-server-url: https://sso.apps.ocp4.jnyilimb.eu/realms/demo
+  quarkus.oidc-client.auth-server-url: https://sso.apps.sno.jnyilimb.eu/realms/demo
   quarkus.oidc-client.client-id: threescale-camel-service
-  quarkus.oidc-client.credentials.secret: CHANGEME_SECRET
+  quarkus.oidc-client.credentials.secret: <CHANGE_ME_SECRET>
   quarkus.otel.exporter.otlp.endpoint: http://otel-collector.observability.svc:4317
 type: Opaque
 ---
