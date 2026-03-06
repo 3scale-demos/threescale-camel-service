@@ -25,14 +25,25 @@ The camel proxy service uses the OAuth2 _client credentials flow_ to retrieve an
 - A running [_Red Hat OpenShift_](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster
 - A running [_Red Hat 3scale API Management_](https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management) platform
 
-
 ## Generate a Java Keystore
 
 ```shell
-keytool -genkey -keypass P@ssw0rd -storepass P@ssw0rd -alias threescale-camel-service -keyalg RSA \
--dname "CN=threescale-camel-service" \
--validity 3600 -keystore ./tls-keys/keystore.p12 -v \
--ext san=DNS:threescale-camel-service.svc,DNS:threescale-camel-service.svc.cluster.local,DNS:threescale-camel-service.camel-quarkus.svc,DNS:threescale-camel-service.camel-quarkus.svc.cluster.local,DNS:threescale-camel-service.ceq-services-jvm.svc,DNS:threescale-camel-service.ceq-services-jvm.svc.cluster.local,DNS:threescale-camel-service.ceq-services-native.svc,DNS:threescale-camel-service.ceq-services-native.svc.cluster.local
+keytool -genkey \
+  -keypass P@ssw0rd \
+  -storepass P@ssw0rd \
+  -alias threescale-camel-service \
+  -keyalg RSA \
+  -dname "CN=threescale-camel-service" \
+  -validity 3600 \
+  -keystore ./tls-keys/keystore.p12 -v \
+  -ext san=DNS:threescale-camel-service.svc,\
+DNS:threescale-camel-service.svc.cluster.local,\
+DNS:threescale-camel-service.camel-quarkus.svc,\
+DNS:threescale-camel-service.camel-quarkus.svc.cluster.local,\
+DNS:threescale-camel-service.ceq-services-jvm.svc,\
+DNS:threescale-camel-service.ceq-services-jvm.svc.cluster.local,\
+DNS:threescale-camel-service.ceq-services-native.svc,\
+DNS:threescale-camel-service.ceq-services-native.svc.cluster.local
 ```
 
 ## Running the application in dev mode
@@ -103,7 +114,7 @@ You can run your application in dev mode that enables live coding using:
 
     [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)). A simple way of starting a Jaeger tracing server is with `docker` or `podman`:
     1. Start the Jaeger tracing server:
-        ```
+        ```shell
         podman run --rm -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_OTLP_ENABLED=true \
         -p 6831:6831/udp -p 6832:6832/udp \
         -p 5778:5778 -p 16686:16686 -p 4317:4317 -p 4318:4318 -p 14250:14250  -p 14268:14268 -p 14269:14269 -p 9411:9411 \
@@ -138,7 +149,7 @@ You can run your application in dev mode that enables live coding using:
             "HTTP_HOST": "echo-api.3scale.net",
             "HTTP_ACCEPT": "*/*,*/*",
             "CONTENT_LENGTH": "0",
-            "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6bXRzSnd0WWxBd2JxOHplMlZNWDZDU0hOMG9OcW5scU0zbDBwX1dBWm1vIn0.eyJleHAiOjE3NjQ3NjY4NjIsImlhdCI6MTc2NDc2NjU2MiwianRpIjoidHJydGNjOjhlY2NiYzdkLWQyNzYtYTM4NC1iOGRkLTk1N2E0MzkzZTY2YiIsImlzcyI6Imh0dHBzOi8vc3NvLmFwcHMub2NwNC5qbnlpbGltYi5ldS9yZWFsbXMvZGVtbyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1NjkyNGQ2NC1iZDNkLTQ0ZjYtYTRkYS03ZTJmODcwYmIyOGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtZGVtbyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMTAuMTI4LjAuMiIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJjbGllbnRBZGRyZXNzIjoiMTAuMTI4LjAuMiIsImNsaWVudF9pZCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSJ9.ITQ6FhE5oKux1-4bVtqKCiRV2FMiW8ID2Tcs6VB2iedGjwuKOCo82N3_jV_6hAXOng3mmpLrVq8l1KzSp6nYC8icHT_y61UZDZ_xd2km8YGw9bMJVzrUQb4cuboGH2wIijgFwaQ7lCsjAhnmIFhgy8szAvvULoZS93D7TSxaSy1QpyqkixNrf6y5z1HjLhFvUu--ejWGDwZfY0ICIE2MGa1HcBe1KDonA_ZPHzOzQq7OYDZb3FZ-Tat1gN7QMeHh6U8C-IsiNlQk6VXE7Mrm53QoSnttGVHvWmMrNMY9ebYMVsGchAOT968w8MXP8Xj9TNKJH8HqWzaIeCS7k7-2xg",
+            "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI...truncated...",
             "HTTP_TRACEPARENT": "00-280e6e63cfd60f55d263c7a7c20ebc42-f2fe175e72c4ea37-01",
             "HTTP_X_FORWARDED_FOR": "***.***.***.***",
             "HTTP_X_FORWARDED_PROTO": "https",
@@ -152,9 +163,9 @@ You can run your application in dev mode that enables live coding using:
 
     >**INFO**: The camel service listening on port `9443` proxies the HTTP request to the `echo-api.3scale.net` server. You should see similar log lines as the following in the camel service proxy logs:
     ```log
-    2025-12-03 12:56:06,772 INFO  traceId=, parentId=, spanId=, sampled= [or.je.ro.CamelProxyRoute] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Incoming headers: {Accept=*/*, CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, CamelHttpPath=/demo, CamelHttpPort=443, CamelHttpQuery=null, CamelHttpRawQuery=null, CamelHttpScheme=https, CamelHttpUri=/demo, CamelHttpUrl=https://echo-api.3scale.net/demo, CamelNettyChannelHandlerContext=ChannelHandlerContext(handler, [id: 0x9f5c37cf, L:/10.88.0.131:9443 - R:/192.168.127.1:46100]), CamelNettyLocalAddress=/10.88.0.131:9443, CamelNettyRemoteAddress=/192.168.127.1:46100, CamelNettySSLSession=Session(1764766566762|TLS_AES_256_GCM_SHA384), Connection=close, content-length=0, Host=echo-api.3scale.net}
-    2025-12-03 12:56:06,772 INFO  traceId=, parentId=, spanId=, sampled= [or.je.ro.CamelProxyRoute] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Headers after processor: {Accept=*/*, authorization=Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6bXRzSnd0WWxBd2JxOHplMlZNWDZDU0hOMG9OcW5scU0zbDBwX1dBWm1vIn0.eyJleHAiOjE3NjQ3NjY4NjIsImlhdCI6MTc2NDc2NjU2MiwianRpIjoidHJydGNjOjhlY2NiYzdkLWQyNzYtYTM4NC1iOGRkLTk1N2E0MzkzZTY2YiIsImlzcyI6Imh0dHBzOi8vc3NvLmFwcHMub2NwNC5qbnlpbGltYi5ldS9yZWFsbXMvZGVtbyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI1NjkyNGQ2NC1iZDNkLTQ0ZjYtYTRkYS03ZTJmODcwYmIyOGEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtZGVtbyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMTAuMTI4LjAuMiIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10aHJlZXNjYWxlLWNhbWVsLXNlcnZpY2UiLCJjbGllbnRBZGRyZXNzIjoiMTAuMTI4LjAuMiIsImNsaWVudF9pZCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSJ9.ITQ6FhE5oKux1-4bVtqKCiRV2FMiW8ID2Tcs6VB2iedGjwuKOCo82N3_jV_6hAXOng3mmpLrVq8l1KzSp6nYC8icHT_y61UZDZ_xd2km8YGw9bMJVzrUQb4cuboGH2wIijgFwaQ7lCsjAhnmIFhgy8szAvvULoZS93D7TSxaSy1QpyqkixNrf6y5z1HjLhFvUu--ejWGDwZfY0ICIE2MGa1HcBe1KDonA_ZPHzOzQq7OYDZb3FZ-Tat1gN7QMeHh6U8C-IsiNlQk6VXE7Mrm53QoSnttGVHvWmMrNMY9ebYMVsGchAOT968w8MXP8Xj9TNKJH8HqWzaIeCS7k7-2xg, CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, CamelHttpPath=/demo, CamelHttpPort=443, CamelHttpQuery=null, CamelHttpRawQuery=null, CamelHttpScheme=https, CamelHttpUri=/demo, CamelHttpUrl=https://echo-api.3scale.net/demo, CamelNettyChannelHandlerContext=ChannelHandlerContext(handler, [id: 0x9f5c37cf, L:/10.88.0.131:9443 - R:/192.168.127.1:46100]), CamelNettyLocalAddress=/10.88.0.131:9443, CamelNettyRemoteAddress=/192.168.127.1:46100, CamelNettySSLSession=Session(1764766566762|TLS_AES_256_GCM_SHA384), Connection=close, content-length=0, Host=echo-api.3scale.net}
-    2025-12-03 12:56:06,773 INFO  traceId=, parentId=, spanId=, sampled= [or.ap.ca.co.ne.ht.HttpClientInitializerFactory] (Camel (camel-1) thread #3 - NettyConsumerExecutorGroup) Created SslContext javax.net.ssl.SSLContext@e375928
+    INFO  [or.je.ro.CamelProxyRoute] Incoming headers: {Accept=*/*, CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, CamelHttpPath=/demo, CamelHttpPort=443, CamelHttpScheme=https, ...}
+    INFO  [or.je.ro.CamelProxyRoute] Headers after processor: {Accept=*/*, authorization=Bearer eyJhbGci...truncated..., CamelHttpHost=echo-api.3scale.net, CamelHttpMethod=GET, ...}
+    INFO  [or.ap.ca.co.ne.ht.HttpClientInitializerFactory] Created SslContext javax.net.ssl.SSLContext@e375928
     ```
 
 ## Packaging and running the application on Red Hat OpenShift
@@ -164,48 +175,37 @@ You can run your application in dev mode that enables live coding using:
 - Access to a [Red Hat OpenShift](https://access.redhat.com/documentation/en-us/openshift_container_platform) cluster v4
 - User has self-provisioner privilege or has access to a working OpenShift project
 - **OPTIONAL**: [**Jaeger**](https://www.jaegertracing.io/), a distributed tracing system for observability ([_open tracing_](https://opentracing.io/)).
+- **For native mode only**: A Linux X86_64 operating system or an OCI (Open Container Initiative) compatible container runtime, such as Podman or Docker is required.
 
-### Instructions to package using Quarkus JVM mode and deploy to OpenShift
+### Common setup steps
 
 1. Login to the OpenShift cluster
     ```shell
     oc login ...
     ```
-2. Create an OpenShift project or use your existing OpenShift project. For instance, to create `ceq-services-jvm`
-    ```shell
-    oc new-project ceq-services-jvm --display-name="Red Hat build of Apache Camel for Quarkus Apps - JVM Mode"
-    ```
+2. Create an OpenShift project or use your existing OpenShift project. For instance:
+    - JVM mode:
+        ```shell
+        oc new-project ceq-services-jvm --display-name="Red Hat build of Apache Camel for Quarkus Apps - JVM Mode"
+        ```
+    - Native mode:
+        ```shell
+        oc new-project ceq-services-native --display-name="Red Hat build of Apache Camel for Quarkus Apps - Native Mode"
+        ```
 3. Create secret containing the keystore
     ```shell
     oc create secret generic threescale-camel-service-keystore-secret \
     --from-file=keystore.p12=./tls-keys/keystore.p12
     ```
 4. Adjust the `quarkus.otel.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
-5. Deploy to OpenShift using the _**S2I binary workflow**_
+
+### Deploy using the S2I binary workflow
+
+- **JVM mode**:
     ```shell
     ./mvnw clean package -Dquarkus.openshift.deploy=true
     ```
-
-### ALTERNATIVE - Instructions to package using Quarkus native mode and deploy to OpenShift
-
-> :warning: **Pre-requisites**
-- For native compilation, a Linux X86_64 operating system or an OCI (Open Container Initiative) compatible container runtime, such as Podman or Docker is required.
-
-1. Login to the OpenShift cluster
-    ```shell
-    oc login ...
-    ```
-2. Create an OpenShift project or use your existing OpenShift project. For instance, to create `ceq-services-native`
-    ```shell
-    oc new-project ceq-services-native --display-name="Red Hat build of Apache Camel for Quarkus Apps - Native Mode"
-    ```
-3. Create secret containing the keystore
-    ```shell
-    oc create secret generic threescale-camel-service-keystore-secret \
-    --from-file=keystore.p12=./tls-keys/keystore.p12
-    ```
-4. Adjust the `quarkus.otel.exporter.otlp.endpoint` property of the `threescale-camel-service-secret` in the [`openshift.yml`](./src/main/kubernetes/openshift.yml) file according to your OpenShift environment and where you installed the [_Jaeger_](https://www.jaegertracing.io/) server.
-5. Package and deploy to OpenShift using the _**S2I binary workflow**_:
+- **Native mode**:
     ```shell
     ./mvnw clean package -Pnative \
     -Dquarkus.openshift.deploy=true
@@ -247,41 +247,20 @@ User-Agent: HTTPie/3.2.1
 user_key: fb61a7d34e82c83b029216a3ca2e24e6
 
 HTTP/1.1 200 OK
-cache-control: private
 content-type: application/json
-date: Wed, 10 Aug 2022 13:03:05 GMT
 server: envoy
-set-cookie: d0df2ffbd348521e2eef0bdddd2b78c1=83e0250661bd946000044c7d5d01a9a8; path=/; HttpOnly; Secure; SameSite=None
-transfer-encoding: chunked
-vary: Origin
 x-3scale-echo-api: echo-api/1.0.3
-x-content-type-options: nosniff
-x-envoy-upstream-service-time: 1
+...
 
 {
-    "args": "",
-    "body": "",
-    "headers": {
-        "CONTENT_LENGTH": "0",
-        "HTTP_ACCEPT": "*/*,*/*",
-        "HTTP_ACCEPT_ENCODING": "gzip, deflate,gzip, deflate",
-        "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJYbHBmQzVaT3dZUVZVdlRHREppRmxMT3lVTXhFZkFLSUdiMDdxcEN6dlBBIn0.eyJleHAiOjE2NjAxMzY3NzcsImlhdCI6MTY2MDEzNjQ3NywianRpIjoiNTUxMWJkNjgtNTk4ZS00YTU2LTk5YTUtYTdjZDk2NjFlMzhlIiwiaXNzIjoiaHR0cHM6Ly9zc28uYXBwcy5jbHVzdGVyLWw1bXQ1Lmw1bXQ1LnNhbmRib3gxODczLm9wZW50bGMuY29tL2F1dGgvcmVhbG1zL29wZW5zaGlmdC1jbHVzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6Ijc1MzljOGVkLTgxNWQtNGFiMC04N2FiLTNlYTFjNDYzZTc3MyIsInR5cCI6IkJlYXJlciIsImF6cCI6InRocmVlc2NhbGUtY2FtZWwtc2VydmljZSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW9wZW5zaGlmdC1jbHVzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImNsaWVudElkIjoidGhyZWVzY2FsZS1jYW1lbC1zZXJ2aWNlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRIb3N0IjoiMy43NC42Ny4yNDgiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtdGhyZWVzY2FsZS1jYW1lbC1zZXJ2aWNlIiwiY2xpZW50QWRkcmVzcyI6IjMuNzQuNjcuMjQ4In0.R2r5ByPw8HwcDAZzWOxpRzFKQu7dhp6aPJkT1j-UAAhVMYsqQRzWhb0nBN1Pd7svyy1pZqI_brmKSkprkCcOH8evgokDqTsTwW8DGtrBNCEEaigSwuRGnctWK2nhifjQBg3hbLxN5PO_VUXmn5bLvk6N0WKvAyFcgM-EMQXwrBEw80MjM6EnOuSAyY0vYyAK2_D_UNgtMy0sCVFH0_sMLjQBWn1ppoRkLxCSdFyF7RmPhLUVDtC7mfZ5jGYgVIzMR6rW2FvUIukycPGjsEWL9PiyIub_2ocOvgXxGMggV_rIjeI3j6jEQ-BGTLfWzeVOPTBkk2vcucyd9QgZBCPe3A",
-        "HTTP_FORWARDED": "for=**.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https, for=**.169.228.162;host=echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com;proto=https",
-        "HTTP_HOST": "echo-api.3scale.net",
-        "HTTP_UBER_TRACE_ID": "3571087cfb4b59b3:f187ff011680923e:3571087cfb4b59b3:1, 3571087cfb4b59b3:a125cfd990a3369e:e1ebfb5bbe241762:1",
-        "HTTP_USER_AGENT": "HTTPie/3.2.1,HTTPie/3.2.1",
-        "HTTP_USER_KEY": "fb61a7d34e82c83b029216a3ca2e24e6, fb61a7d34e82c83b029216a3ca2e24e6",
-        "HTTP_VERSION": "HTTP/1.1",
-        "HTTP_X_ENVOY_EXPECTED_RQ_TIMEOUT_MS": "15000",
-        "HTTP_X_ENVOY_EXTERNAL_ADDRESS": "3.74.67.248",
-        "HTTP_X_FORWARDED_FOR": "**.169.228.162,**.169.228.162,3.74.67.248",
-        "HTTP_X_FORWARDED_HOST": "echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com, echo-api.apps.cluster-l5mt5.l5mt5.sandbox1873.opentlc.com",
-        "HTTP_X_FORWARDED_PORT": "443, 443",
-        "HTTP_X_FORWARDED_PROTO": "https",
-        "HTTP_X_REQUEST_ID": "5dea4e96-5768-4ec2-a96a-de3e0559d80c"
-    },
     "method": "GET",
     "path": "/demo",
+    "headers": {
+        "HTTP_HOST": "echo-api.3scale.net",
+        "HTTP_AUTHORIZATION": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI...truncated...",
+        "HTTP_USER_KEY": "fb61a7d34e82c83b029216a3ca2e24e6, fb61a7d34e82c83b029216a3ca2e24e6",
+        ...
+    },
     "uuid": "98621a69-0fa8-4bf6-8c11-7e9ae140f9fd"
 }
 ```
