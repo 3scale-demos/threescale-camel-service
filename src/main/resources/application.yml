@@ -44,6 +44,12 @@ quarkus:
     labels:
       app.openshift.io/runtime: camel # Apache Camel icon
       camel.apache.org/app: ${camel.context.name} # For Camel Dashboard on OpenShift discoverability
+      # Cryostat discovery labels for JFR monitoring
+      cryostat.io/name: cryostat
+      cryostat.io/namespace: observability
+      cryostat.io/harvester-template: Continuous
+      cryostat.io/harvester-period: 15m
+      cryostat.io/max-files: '3'
     # The build config strategy to use
     build-strategy: DOCKER
     # The default Dockerfile to use for jvm builds

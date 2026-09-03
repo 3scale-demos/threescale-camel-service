@@ -1,11 +1,9 @@
 package org.jeannyil.routes;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.camel.Exchange;
@@ -47,9 +45,10 @@ public class CamelProxyRoute extends RouteBuilder {
         final RouteDefinition from;
         if (Files.exists(keystorePath())) {
             from = from("netty-http:proxy://0.0.0.0:{{camel-proxy-service.port.secure}}"
-                        + "?ssl=true&keyStoreFile=#keystoreFile"
+                        + "?ssl=true"
+                        + "&keyStoreResource=file:{{camel-proxy-service.keystore.mount-path}}/keystore.p12"
                         + "&passphrase={{camel-proxy-service.keystore.passphrase}}"
-                        + "&trustStoreFile=#keystoreFile");
+                        + "&trustStoreResource=file:{{camel-proxy-service.keystore.mount-path}}/keystore.p12");
         } else {
             from = from("netty-http:proxy://0.0.0.0:{{camel-proxy-service.port.nonsecure}}");
         }
@@ -73,11 +72,6 @@ public class CamelProxyRoute extends RouteBuilder {
 
     Path keystorePath() {
         return Path.of(keystoreMountPath, "keystore.p12");
-    }
-
-    @Named("keystoreFile")
-    File getKeystoreFile() {
-        return keystorePath().toFile();
     }
     
 }
