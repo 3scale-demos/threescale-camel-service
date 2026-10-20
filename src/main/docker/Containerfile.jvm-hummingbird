@@ -16,8 +16,14 @@ USER 65532
 # Do not use $JAVA_OPTS in ENTRYPOINT — that requires a shell. Prefer JDK_JAVA_OPTIONS,
 # which the JVM reads natively.
 # JVM Configuration:
-# - Use G1GC: -XX:+UseG1GC 
-# - Set the initial and maximum heap size to 50% and 75% of the available memory: -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=75.0
+# - Use G1GC: -XX:+UseG1GC
+# - Set the initial and maximum heap size to 50% and 65% of the available memory: -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=65.0
+# - MaxRAMPercentage is set to 65% (not the G1GC-typical 75%) to leave sufficient
+#   off-heap headroom for G1GC remembered sets, Cryostat agent, and NMT overhead.
+#   With 1536Mi container limit: heap ~998 MB, off-heap budget ~538 MB.
+# - InitialRAMPercentage is set to 50% to pre-allocate ~768 MB at startup, avoiding
+#   heap resizing churn. The JVM default is only 1.5625% (~24 MB), which causes
+#   repeated GC pauses during warm-up as the heap grows on demand.
 # - Set the number of active processors to 4 (CPU limit is intentionnaly not set): -XX:ActiveProcessorCount=4
 # - Configure JVM to facilitate diagnostics:
 # -> Exit the JVM when OutOfMemoryError is thrown: -XX:+ExitOnOutOfMemoryError
@@ -29,7 +35,7 @@ ENV JDK_JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 \
 -XX:+UseG1GC \
 -XX:ActiveProcessorCount=4 \
 -XX:InitialRAMPercentage=50.0 \
--XX:MaxRAMPercentage=75.0 \
+-XX:MaxRAMPercentage=65.0 \
 -XX:+ExitOnOutOfMemoryError \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath=/tmp/heapdump.hprof \

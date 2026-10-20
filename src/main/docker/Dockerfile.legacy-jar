@@ -87,7 +87,12 @@ COPY target/*-runner.jar /deployments/quarkus-run.jar
 
 EXPOSE 8080
 USER 185
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+# JVM tuning: G1GC with diagnostics. Overrides UBI default ParallelGC.
+# MaxRAMPercentage=65 leaves ~35% for off-heap (G1GC remembered sets, Cryostat agent, NMT).
+# InitialRAMPercentage=50 pre-allocates heap at startup (JVM default is only 1.5625%).
+# Memory requests/limits=1536Mi in application config. See ~/.agents/AGENTS.md for the full policy.
+ENV GC_CONTAINER_OPTIONS="-XX:+UseG1GC -XX:ActiveProcessorCount=4 -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/heapdump.hprof -XX:NativeMemoryTracking=summary -Xlog:gc*:file=/tmp/gc.log:time,level,tags:filecount=5,filesize=10m"
+ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=65.0"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]

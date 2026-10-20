@@ -82,9 +82,9 @@ quarkus:
     resources:
         requests:
             cpu: 30m
-            memory: 512Mi
+            memory: 1536Mi
         limits:
-            memory: 512Mi
+            memory: 1536Mi
     # Generation of ServiceMonitor resource
     ## By default, a ServiceMonitor resource is generated.
     ## Disabled means no ServiceMonitor resource is generated   
