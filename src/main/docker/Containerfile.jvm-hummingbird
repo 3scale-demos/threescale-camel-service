@@ -1,5 +1,7 @@
 # Use the Red Hat hardened OpenJDK image (Hummingbird / distroless: no shell)
-FROM registry.access.redhat.com/hi/openjdk:21.0.12-runtime
+# Pinned for deterministic rebuilds; 21.0.13 is a pre-disclosure rebuild, not the
+# Java4Shell fix (fixed build: 21.0.13.1, unpublished at pin time).
+FROM registry.access.redhat.com/hi/openjdk:21.0.13-runtime
 
 ENV LANGUAGE='en_US:en'
 
@@ -36,6 +38,7 @@ ENV JDK_JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 \
 -XX:ActiveProcessorCount=4 \
 -XX:InitialRAMPercentage=50.0 \
 -XX:MaxRAMPercentage=65.0 \
+-XX:-UseBASE64Intrinsics \
 -XX:+ExitOnOutOfMemoryError \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath=/tmp/heapdump.hprof \
