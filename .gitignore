@@ -43,3 +43,10 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 # TLS Certificates
 .certs/
+# Dev TLS fixtures — regenerated locally, never version private keys (public repo)
+tls-keys/keystore.p12
+tls-keys/*.p12
+tls-keys/*.jks
+tls-keys/truststore.p12
+*.p12
+*.jks
