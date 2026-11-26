@@ -27,21 +27,14 @@ USER 65532
 #   heap resizing churn. The JVM default is only 1.5625% (~24 MB), which causes
 #   repeated GC pauses during warm-up as the heap grows on demand.
 # - Set the number of active processors to 4 (CPU limit is intentionnaly not set): -XX:ActiveProcessorCount=4
-# - Configure JVM to facilitate diagnostics:
-# -> Exit the JVM when OutOfMemoryError is thrown: -XX:+ExitOnOutOfMemoryError
-# -> Enable automatic heap dump: -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/heapdump.hprof
-# -> Enable native memory (off-heap) tracking (not recommended in PRODUCTION): -XX:NativeMemoryTracking=summary
-# -> Enable Structured GC logging: -Xlog:gc*:file=/tmp/gc.log:time,level,tags:filecount=5,filesize=10m
+# - Exit the JVM when OutOfMemoryError is thrown: -XX:+ExitOnOutOfMemoryError
+# - Removed NMT/HeapDump/GC-log — rely on Cryostat (cryostat.io/harvester-template=Continuous, 15m, max-files=3)
 ENV JDK_JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 \
 -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
 -XX:+UseG1GC \
 -XX:ActiveProcessorCount=4 \
 -XX:InitialRAMPercentage=50.0 \
 -XX:MaxRAMPercentage=65.0 \
--XX:+ExitOnOutOfMemoryError \
--XX:+HeapDumpOnOutOfMemoryError \
--XX:HeapDumpPath=/tmp/heapdump.hprof \
--XX:NativeMemoryTracking=summary \
--Xlog:gc*:file=/tmp/gc.log:time,level,tags:filecount=5,filesize=10m"
+-XX:+ExitOnOutOfMemoryError"
 
 ENTRYPOINT ["java", "-jar", "/deployments/quarkus-run.jar"]
